@@ -1,0 +1,54 @@
+//快排
+#include <iostream
+#include <algorithm> 
+typedef long long ll;
+using namespace std; 
+const ll maxn = 1e5 + 7; 
+ll a[maxn];
+void quicksort(ll *a,ll l,ll r)
+{    
+    ll mark = a[l];    
+    ll i = l, j = r;    
+    if(l >= r)return ;    
+    while(i != j)    
+    {        
+        while(i < j && a[j] >= mark)        
+        {           
+             j--;       
+        }        
+        if(i < j)          
+            a[i] = a[j];         
+        while(i < j && a[i] <= mark)       
+        {           
+             i++;        
+        }        
+        if(i < j)       
+        {         
+            a[j] = a[i];        
+        }   
+    }    
+    a[i] = mark;    
+    quicksort(a,l,i - 1);    
+    quicksort(a,i + 1,r);
+} 
+int main()
+{    
+    ll n;    
+    cout << "请你输输入你想要排序的表的长度" << endl;    
+    cin >> n;    
+    cout << "请输入表中的元素" << endl;    
+    for(int i = 1; i <= n; i ++)   
+    {        
+        cin >> a[i];    
+    }     
+    quicksort(a,1,n);     
+    cout << "表中的元素按照从小到大排列如下" << endl;    
+    for(int i = 1; i <= n; i ++)    
+    {        
+        cout << a[i] << " ";        
+        if(i % 10 == 0)cout << endl;    
+    }   
+    cout << endl;     
+    return 0;
+}
+
