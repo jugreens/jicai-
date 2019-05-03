@@ -145,7 +145,8 @@ int main ()
         num[i] = lower_bound(order + 1 , order + sz + 1 , num[i]) - order ;
     for (int i = 1 ; i <= n ; ++i)
         printf ("%d " , num[i]) ;
-离散化  
+
 }
+离散化
 
 */
