@@ -1,0 +1,40 @@
+
+饱和式救援
+#include <bits/stdc++.h>
+using namespace std;
+const int N = 2010;
+double dp[N][N], ss[N],tt[N];
+int n,m,k;
+int main()
+{
+    scanf("%d %d %d",&n,&m,&k);
+    for(int i = 1 ; i <= m ; i++)
+       ss[i]=1.0;
+    for(int i = 1 ;i <= n ; i++)
+    {
+        int x;
+        double p;
+        scanf("%d %lf",&x,&p);
+        ss[x] *= (1 - p);
+    }
+    for (int i = 1 ; i <= m ; i++)
+        tt[i] = 1 - ss[i];
+
+    dp[0][0] = 1;
+    for (int i = 1 ; i <= m ; i++)
+    {
+        for (int j = m ; j>0 ; j--)
+        {
+            dp[i][j] = dp[i-1][j] * ss[i] + dp[i-1][j-1] * tt[i];
+            dp[i][0] = dp[i-1][0] * ss[i];
+        }
+    }
+    double ans = 0;
+    for (int i = k ; i <= m ; i++)
+        ans += dp[m][i];
+    printf("%.3f\n",ans);
+    return 0;
+}
+
+
+dp
