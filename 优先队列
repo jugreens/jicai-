@@ -1,0 +1,41 @@
+
+//https://blog.csdn.net/weixin_38772011/article/details/79685321
+
+#include<bits/stdc++.h>
+using namespace std;
+typedef longh long ll;
+const int N = 1e6+10;
+int main()
+{
+
+    priority_queue<int>q;
+    int t,n,tmp;
+    scanf("%d",&t);
+    while(t--)
+    {
+        while(!q.empty())q.pop();
+        scanf("%d",&n);
+        int minn=0x7fffffff,sum=0;
+        for(int i=0; i<n; i++)
+        {
+            scanf("%d",&tmp);
+            if(tmp<minn)minn=tmp;
+            q.push(tmp);
+        }
+        while(q.top()!=minn)
+        {
+            tmp=q.top();
+            q.pop();
+            int last=q.top();
+            if(last==tmp)
+            {
+                q.push(minn);
+                sum+=tmp-minn;
+                continue;
+            }
+            sum+=tmp-last;
+            q.push(last);
+        }
+        printf("%d %d\n",sum,minn+sum);
+    }
+}
