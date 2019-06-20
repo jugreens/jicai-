@@ -1,1 +1,45 @@
+//https://blog.csdn.net/qq_41289920/article/details/88049573
+#include<bits/stdc++.h>
+using namespace std;
+typedef long long ll;
+const int N = 1e6+10;
+
+const int mod = 1e9+7 ;
+int dp[55][550];
+
+char a[55];
+
+
+int init(char a)
+{
+    return a-'0';
+}
+int main()
+{
+    cin >> a+1;
+    int len = strlen(a+1);
+    for(int i = 1 ; i <= len ; i++)
+    {
+        for(int j = 0 ; j <= 550 ; j++)
+        {
+            dp[i][j] = dp[i-1][j];
+            if(j-init(a[i])>=0)
+                dp[i][j]+=dp[i-1][j-init(a[i])];
+            dp[i][j]%=mod;
+        }
+        dp[i][init(a[i])]++;
+
+    }
+    int ans = 0 ;
+    for(int i = 0 ; i <= 550 ; i++)
+    {
+        if(i%3==0)
+        {
+            ans+=dp[len][i];
+            ans%=mod;
+            //cout << dp[len][i] << " " << i <<endl;
+        }
+    }
+    cout <<ans <<endl;
+}
 
