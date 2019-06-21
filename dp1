@@ -61,3 +61,44 @@ int main()
     return 0;
 }
 
+
+//https://ac.nowcoder.com/acm/problem/21738
+#include<bits/stdc++.h>
+using namespace std;
+const int MAX_N = 1e6+50;
+const int mod = 1e9+7;
+typedef long long LL;
+int dp[11][MAX_N],n,k;
+vector<int> a[MAX_N];
+int main(void)
+{
+	cin>>n>>k;
+	for(int i=1; i<=k; i++)  //倍数预处理
+		for(int j=2; i*j<=k; j++)
+			a[i].push_back(i*j);
+
+	memset(dp,0,sizeof(dp));  //边界初始化
+	for(int i=1; i<=k; i++) dp[1][i] = 1;
+	 
+	for(int i=2; i<=n; i++)  //位数枚举
+	{
+		LL ans = 0,sum=0,temp;  //注意这里要long long，防爆
+		for(int j=1; j<=k; j++) ans = (ans+dp[i-1][j])%mod;  //前面的方案数总和
+		for(int j=1; j<=k; j++)
+		{
+			temp = ans;
+			dp[i][j] = (sum+dp[i-1][j])%mod;
+			sum = (sum+dp[i-1][j])%mod;  //状态的累计
+			temp = (temp+mod-sum)%mod;
+			for(int q=0; q<a[j].size(); q++)
+				temp = (temp+mod-dp[i-1][a[j][q]])%mod;  //枚举倍数减去
+			dp[i][j] = (dp[i][j]+temp)%mod;
+		}
+	}
+	LL res = 0;
+	for(int i=1; i<=k; i++) res = (LL)(res+dp[n][i])%mod;
+	cout<<res;
+	return 0;
+}
+
+
