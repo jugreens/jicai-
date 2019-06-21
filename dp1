@@ -101,4 +101,75 @@ int main(void)
 	return 0;
 }
 
+//https://ac.nowcoder.com/acm/problem/21652
+#include <bits/stdc++.h>
+using namespace std;
+
+char s1[2505], s2[2505];
+int dp[2][2505], pre[2][2505], mod = 1e9+7;
+
+int main()
+{
+    scanf("%s%s",s1+1,s2+1);
+    int len1 = strlen(s1+1), len2 = strlen(s2+1), cur = 0;
+    dp[cur][0] = 1;
+    for(int i = 0; i <= len1; ++i)
+    {
+        if(i) cur ^= 1;
+        if(i) memset(dp[cur], 0, sizeof(dp[cur]));
+        for(int j = 0; j <= len2; ++j)
+        {
+            if(i == 0 && j == 0) continue;
+            if(j) pre[cur][j] = pre[cur][j-1] + (s2[j] == '(' ? 1 : -1);
+            else pre[cur][j] = pre[cur^1][j] + (s1[i] == '(' ? 1 : -1);
+
+            if(pre[cur][j] < 0) continue;
+            if(i) dp[cur][j] += dp[cur^1][j];
+            if(j) dp[cur][j] += dp[cur][j-1];
+            dp[cur][j] %= mod;
+        }
+    }
+    if(pre[cur][len2] == 0) printf("%d\n",dp[cur][len2]);
+    else printf("0\n");
+    return 0;
+}
+
+记忆化搜索
+//记忆化搜索
+#include<algorithm>
+#include<queue>
+#include<string.h>
+#include<cmath>
+#include<vector>
+using namespace std;
+const int mod=1e9+7;
+char str[2][2501];
+int dp[2510][2510];//len1和len2,比较简单的dp数组，通俗易懂可以优化
+int dfs(int len1,int len2,int index)
+{
+    if(index<0)return 0;//有了多余的右括号就要返回，不返回后面进来的左括号会和它抵消产生多余答案
+    if(str[0][len1]=='\0'&&str[1][len2]=='\0'&&index==0)
+        return 1;
+    if(dp[len1][len2]!=-1)
+        return dp[len1][len2];
+    int ans=0;
+    for(int i=0; i<2; i++)
+    {
+        if(i==0&&str[i][len1]!='\0')
+            ans+=dfs(len1+1,len2,index+(str[i][len1]=='('?1:-1));
+        if(i==1&&str[i][len2]!='\0')
+            ans+=dfs(len1,len2+1,index+(str[i][len2]=='('?1:-1));
+    }
+	return dp[len1][len2]=ans%mod;
+}
+int main()
+{
+    memset(dp,-1,sizeof(dp));
+    scanf("%s%s",str[0],str[1]);
+    printf("%d\n",dfs(0,0,0));
+}
+
+
+
+
 
