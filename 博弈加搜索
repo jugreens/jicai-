@@ -1,0 +1,64 @@
+
+//https://ac.nowcoder.com/acm/problem/21797
+#include<bits/stdc++.h>
+using namespace std;
+# define ll long long
+# define inf 0x3f3f3f3f
+# define LL_inf (1ll<<60)
+const int maxn = 200;
+char str[55][55];
+int r,c,k;
+struct node
+{
+    int x,y,step;
+    node() {}
+    node(int xx,int yy,int zz)
+    {
+        x=xx,y=yy,step=zz;
+    }
+};
+int f[2][4]= {{1,-1,0,0},{0,0,1,-1}};
+bool judge(int x,int y)
+{
+    return x>=1&&x<=r&&y>=1&&y<=c&&str[x][y]!='#';
+}
+int dp[55][55][maxn];
+bool dfs(int st,int ed,int k)
+{
+    if(str[st][ed]=='E')return dp[st][ed][k]=0;// 当为'E'的时候，这个时候对于后手是必败态，对于先手就是必胜态
+    if(k<=0)
+        return 0;
+    if(dp[st][ed][k]!=-1)
+        return dp[st][ed][k];
+    for(int i=0; i<4; i++)
+    {
+        int tx=st+f[0][i];
+        int ty=ed+f[1][i];
+        if(judge(tx,ty)&&k-1>=0)
+        {
+            if(dfs(tx,ty,k-1)==0)
+                return  dp[st][ed][k]=1;
+        }
+    }
+    return dp[st][ed][k]=0;
+}
+int main()
+{
+    memset(dp,-1,sizeof(dp));
+    int st,ed;
+    scanf("%d %d %d",&r,&c,&k);
+    for(int i=1; i<=r; i++)
+    {
+        scanf("%s",str[i]+1);
+        for(int j=1; j<=c; j++)
+        {
+            if(str[i][j]=='T')
+            {
+                st=i,ed=j;
+            }
+        }
+    }
+    int ans=dfs(st,ed,k);
+    printf("%s\n",ans==1?"niuniu":"niumei");
+    return 0;
+}
