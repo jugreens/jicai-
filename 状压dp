@@ -1,0 +1,89 @@
+//https://blog.csdn.net/wjl_zyl_1314/article/details/89891168
+#include <bits/stdc++.h>
+
+using namespace std;
+
+#define LL long long
+#define Re register
+#define U unsigned
+#define forn(i,a,b) for(Re int i = a;i <= b;++i)
+#define nfor(i,a,b) for(Re int i = a;i >= b;--i)
+#define CLR(i,a) memset(i,a,sizeof(i))
+#define BR printf("--------------------\n")
+#define pb push_back
+#define Rep(i,a,b) for(int i=a;i<=b;i++)
+#define DEBUG(x) std::cerr << #x << '=' << x << std::endl
+const double PI=atan(1.)*4.;
+const int maxn=1e6+5;
+const int inf = 0x3f3f3f3f;
+int dp[2][1<<20],val[2][1<<22];
+int a[22];
+string s;
+
+int n,len;
+
+int cal(string s)//转换为十进制数字表示状态
+{
+    int res=0,b=1;
+    for(int i=0;i<len;i++)
+    {
+        res+=(s[i]=='1'?b:0);
+        b<<=1;
+    }
+    return res;
+}
+
+int cost(int from,int to)//计算从前一个状态转移到下一个状态所需的代价
+{
+    int res=0;
+    for(int i=0;i<22;i++)
+    {
+        if((from&(1<<i))==0&&(to&(1<<i)))
+            res++;
+    }
+    return res*res;
+}
+
+
+int main()
+{
+	ios::sync_with_stdio(false);
+    cin.tie(0);
+   	cout.tie(0);
+   	memset(dp,inf,sizeof(dp));//初始化
+    cin>>n>>len;
+    for(int i=0;i<n;i++)
+    {
+        cin>>s;
+        a[i]=cal(s);
+        dp[0][1<<i]=cost(0,a[i]);//初始化，第一次执行的时候执行第i条指令的代价
+        val[0][1<<i]=a[i];//同时记录改状态下内存块被访问的状态
+    }
+    int p,q;//滚动数组的下标
+    for(int i=1;i<n;i++)
+    {
+        p=i&1,q=(i-1)&1;//p表示本次操作，q代表上一次操作
+        for(int j=1;j<(1<<n);j++)
+        {
+            if(dp[q][j]==inf)continue;//如果j状态不存在
+            for(int k=0;k<n;k++)
+            {
+                if(!(j&(1<<k)))//如果j状态下未执行第k条指令
+                {
+                    int tmp=dp[q][j]+cost(val[q][j],a[k]);//计算代价
+                    if(tmp<dp[p][j|(1<<k)])
+                    {
+                        dp[p][j|(1<<k)]=tmp;
+                        val[p][j|(1<<k)]=val[q][j]|a[k];//同步
+                    }
+                }
+            }
+            dp[q][j] = inf;//初始化下一次执行时，状态为j的最小代价。
+        }
+    }
+    //最终答案为执行了n条指令，且每一条指令都被执行（j的状态为111111...）
+    cout<<dp[(n-1)&1][(1<<n)-1]<<endl;
+	return 0;
+}
+//没看懂
+
