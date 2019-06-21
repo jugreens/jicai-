@@ -1,40 +1,82 @@
-
-饱和式救援
-#include <bits/stdc++.h>
+//https://ac.nowcoder.com/acm/problem/21668
+#include<bits/stdc++.h>
 using namespace std;
-const int N = 2010;
-double dp[N][N], ss[N],tt[N];
-int n,m,k;
+const int N = 2e5+10;
+const int mod = 1e9+7;
+const int INF = 1<<30 ;
+typedef long long ll;
+
+struct node
+{
+    int a ,b ,c ;
+}ed[N];
+int a[N] , b[N];
+int dp[N];
 int main()
 {
-    scanf("%d %d %d",&n,&m,&k);
-    for(int i = 1 ; i <= m ; i++)
-       ss[i]=1.0;
-    for(int i = 1 ;i <= n ; i++)
-    {
-        int x;
-        double p;
-        scanf("%d %lf",&x,&p);
-        ss[x] *= (1 - p);
-    }
-    for (int i = 1 ; i <= m ; i++)
-        tt[i] = 1 - ss[i];
+    int n , m ,k ;
+    cin >> n >> k;
+    m = 20000+2 ;
+    for(int i = 1 ; i <= n  ;i++)
+        cin >> ed[i].a ;
+    for(int i = 1 ; i <= n ; i++)
+        cin >> ed[i].b ;
+    for(int i = 1 ; i <= n ; i++)
+        cin >> ed[i].c ;
 
-    dp[0][0] = 1;
-    for (int i = 1 ; i <= m ; i++)
+
+    int ans = 0x3f3f3f3f;
+    memset(dp,0x3f,sizeof(dp));
+    dp[0] =0 ;
+    for(int i = 1 ; i <= n ; i++)
     {
-        for (int j = m ; j>0 ; j--)
+        int x = ed[i].a-1 ;
+        int y = ed[i].c;
+        for(int j = m ; j >= x ; j--)
         {
-            dp[i][j] = dp[i-1][j] * ss[i] + dp[i-1][j-1] * tt[i];
-            dp[i][0] = dp[i-1][0] * ss[i];
+            dp[j] = min(dp[j],dp[j-x]+y);
         }
     }
-    double ans = 0;
-    for (int i = k ; i <= m ; i++)
-        ans += dp[m][i];
-    printf("%.3f\n",ans);
+
+    for(int i = k ; i <= m ; i++)
+    {
+        //cout <<dp[i] << " " <<endl;
+        ans = min(ans ,dp[i]) ;
+    }
+    //cout << ans<<endl;
+    memset(dp,0x3f,sizeof(dp));
+    dp[0] =0 ;
+    for(int i = 1 ; i <= n ; i++)
+    {
+        int x = ed[i].b-1;
+        for(int j = m ; j >= x ;j--)
+        {
+            dp[j] =min(dp[j],dp[j-x]+ed[i].c);
+        }
+    }
+    for(int i = k ; i <= m ; i++)
+    {
+        ans = min(ans ,dp[i]) ;
+    }
+    memset(dp,0x3f,sizeof(dp));
+    dp[0] =0 ;
+    for(int i = 1 ; i <= n ; i++)
+    {
+        int x = ed[i].a+ed[i].b;
+        for(int j = m ; j >= x ; j--)
+        {
+            dp[j] = min(dp[j],dp[j-x]+ed[i].c);
+        }
+    }
+    for(int i = 2*k-1 ; i <= m ; i++)
+    {
+        ans = min(ans ,dp[i]) ;
+    }
+    if(ans == 0x3f3f3f3f)
+        cout << "-1" <<endl;
+    else
+        cout <<ans <<endl;
     return 0;
 }
 
 
-dp
