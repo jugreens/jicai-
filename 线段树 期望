@@ -1,0 +1,100 @@
+
+//https://blog.csdn.net/Jaihk662/article/details/81365793
+#include<stdio.h>
+#include<string.h>
+#include<algorithm>
+#include<map>
+#include<string>
+#include<math.h>
+#include<queue>
+#include<stack>
+#include<iostream>
+using namespace std;
+#define LL long long
+#define mod 998244353
+LL tre[500005];
+typedef struct Res
+{
+	int x, id, p;
+	bool operator < (const Res &b) const
+	{
+		if(x>b.x || x==b.x && id<b.id)
+			return 1;
+		return 0;
+	}
+}Res;
+Res s[200005];
+void Create(int l, int r, int x)
+{
+	int m;
+	if(l==r)
+	{
+		tre[x] = 1;
+		return;
+	}
+	m = (l+r)/2;
+	Create(l, m, x*2);
+	Create(m+1, r, x*2+1);
+	tre[x] = 1;
+}
+void Update(int l, int r, int x, int a, int b)
+{
+	int m;
+	if(l==r)
+	{
+		tre[x] = (LL)(100-b)*828542813%mod;
+		return;
+	}
+	m = (l+r)/2;
+	if(a<=m)
+		Update(l, m, x*2, a, b);
+	else
+		Update(m+1, r, x*2+1, a, b);
+	tre[x] = tre[x*2]*tre[x*2+1]%mod;
+}
+LL Query(int l, int r, int x, int a, int b)
+{
+	int m;
+	LL ans = 1;
+	if(l>=a && r<=b)
+		return tre[x];
+	m = (l+r)/2;
+	if(a<=m)
+		ans = ans*Query(l, m, x*2, a, b)%mod;
+	if(b>=m+1)
+		ans = ans*Query(m+1, r, x*2+1, a, b)%mod;
+	return ans;
+}
+LL Pow(LL a, LL b)
+{
+	LL ans = 1;
+	while(b)
+	{
+		if(b%2)
+			ans = ans*a%mod;
+		a = a*a%mod;
+		b /= 2;
+	}
+	return ans;
+}
+int main(void)
+{
+	LL ans;
+	int n, i;
+	scanf("%d", &n);
+	for(i=1;i<=n;i++)
+	{
+		scanf("%d%d", &s[i].p, &s[i].x);
+		s[i].id = i;
+	}
+	sort(s+1, s+n+1);
+	Create(1, n, 1);
+	ans = 0;
+	for(i=1;i<=n;i++)
+	{
+		ans = (ans+Query(1, n, 1, 1, s[i].id)*s[i].p%mod*828542813)%mod;
+		Update(1, n, 1, s[i].id, s[i].p);
+	}
+	printf("%lld\n", ans);
+	return 0;
+}
