@@ -1,0 +1,25 @@
+//https://blog.csdn.net/JXUFE_ACMer/article/details/80114644
+#include<bits/stdc++.h>
+using namespace std;
+typedef long long ll;
+const int N = 1e6+10;
+
+int main()
+{
+    int n;
+    ll a,b;
+    cin>>n;
+    while(n--)
+    {
+        cin>>a>>b;
+        ll t=cbrt(a*b);
+        ll x=a/t;
+        ll y=b/t;
+        if((x*x*y==a)&&(x*y*y==b))
+            cout<<"Yes"<<endl;
+        else
+            cout<<"No"<<endl;
+    }
+return 0;
+}
+
