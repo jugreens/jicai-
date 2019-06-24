@@ -23,3 +23,38 @@ int main()
 return 0;
 }
 
+
+//https://ac.nowcoder.com/acm/contest/945/H
+#include<bits/stdc++.h>
+
+using namespace std;
+#define inf 0x3f3f3f3f
+#define ll long long
+struct node 
+{
+    int num;
+    int w;
+}ed[100000];
+int cmp(node a , node b)
+{
+    if(a.w==b.w)
+        return a.num<b.num;
+     return a.w < b.w  ;
+}
+int main() 
+{
+    int n;
+    scanf("%d",&n);
+    for (int i = 0; i < n; i++) 
+    {
+        ed[i].num = i;
+        scanf("%d", &ed[i].w);
+    }
+    sort(ed,ed+n,cmp);
+    int ans = 0;
+    for (int j = 0; j < n; j++) 
+    {
+        ans = max(ans, ed[j].num - j);
+    }
+    printf("%d\n", ++ans);
+}
