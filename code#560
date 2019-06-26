@@ -7,7 +7,6 @@ const int N = 1e6 + 10;
 
 ll d[N];
 ll dd[N];
-
 int main() {
     int n;
     int T;
@@ -28,7 +27,6 @@ int main() {
             cout << -1 << endl;
             continue;
         }
-
         sort(dd, dd+cnt);
         int ok = 1;
         for(int i = 0; i < n; i++) {
@@ -39,6 +37,5 @@ int main() {
         if(ok) cout << ans << endl;
         else cout << -1 << endl;
     }
-
     return 0;
 }
