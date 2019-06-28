@@ -40,10 +40,10 @@ int main()
 
     for(int i = k ; i <= m ; i++)
     {
-        //cout <<dp[i] << " " <<endl;
+
         ans = min(ans ,dp[i]) ;
     }
-    //cout << ans<<endl;
+
     memset(dp,0x3f,sizeof(dp));
     dp[0] =0 ;
     for(int i = 1 ; i <= n ; i++)
