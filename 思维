@@ -88,3 +88,39 @@ int main()
     return 0;
 }
 
+
+
+//https://ac.nowcoder.com/acm/contest/984/A
+
+#include<bits/stdc++.h>
+using namespace std;
+typedef long long ll;
+const int N = 1e6+10;
+stack<ll> s;
+ll  l[N],sum = 0 ;
+ll  high[N],count1[N];
+int main()
+{
+
+	int n;
+	cin>>n;
+	for(int i=1;i<=n;i++)
+		cin>>high[i];
+	for(int i=n;i>=1;i--)
+	{
+		while(!s.empty() && high[s.top()]<high[i]) s.pop();
+		if(s.empty())
+			count1[i]=n+1;
+		else
+			count1[i]=s.top();
+		s.push(i);
+	}
+	for(int i=1;i<=n;i++)
+	{
+	    sum+=count1[i]-i-1;
+	}
+	cout<<sum<<endl;
+	return 0;
+}
+
+
