@@ -1,0 +1,53 @@
+//https://blog.csdn.net/lzyws739307453/article/details/94882933
+//https://ac.nowcoder.com/acm/contest/984/F
+
+#include <bits/stdc++.h>
+using namespace std;
+const int N = 2e9 + 7;
+int m, n;
+int dp[50][50], sum[50];
+void init() {
+    memset(dp,0,sizeof(dp));
+    for (int i = 0; i < 50; i++)
+        for (int j = 0; j <= i; j++)
+            if (!j || i==j)
+                dp[i][j] = 1;
+            else dp[i][j] = dp[i - 1][j - 1] + dp[i - 1][j];
+} 
+int solve(int x) {
+    if (x <= 1)
+        return 0;
+    int ans = 0, ans0 = 0, ans1 = 0, len = 0;
+    while (x) {
+        sum[len++] = x & 1;
+        if (x & 1)
+            ans1++;
+        else ans0++;
+        x >>= 1;
+    }
+    for (int i = len - 1; i > 0; i--) { //从第一位到最高位的次位依次遍历
+        if (i & 1)//总数位为奇数  除去最高位的1,就剩下偶数位了
+            ans += ((1 << (i - 1)) - dp[i - 1][(i - 1) >> 1]) >> 1; //二进制中0和1个数不想等的数目，总情况减去剩余位中1和0相等的情况，比如i=5，剩下4位中两个0两个1的组合数
+        else ans += (1 << (i - 1)) >> 1;//总位数为偶数i，最高位为1,剩下的i-1位的组合数
+    }
+    if (ans0 >= ans1)//数本身二进制表示也满足条件
+        ans++;
+    ans0 = 0, ans1 = 1;
+    for (int i=len-2;i>=0;--i) {
+        if (!sum[i])
+            ans0++;
+        else { //遍历满足条件的插入法
+            for (int j = i; j >= 0 && j + ans0 + 1 >= i - j + ans1; j--)
+                ans += dp[i][j];
+            ans1++;
+        }
+    }
+    return ans;
+}
+int main() {
+    init();
+    while (~scanf("%d%d", &m, &n))
+        printf("%d\n", solve(n) - solve(m - 1));
+    return 0;
+}
+//没看懂 懒得看
