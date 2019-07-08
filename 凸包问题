@@ -1,0 +1,165 @@
+//https://ac.nowcoder.com/acm/contest/984/G
+计算边长
+#include <iostream>
+#include <iomanip>
+#include <cmath>
+using namespace std;
+
+struct Point{
+    double x,y;
+}p[5050],pl[5050];
+double dis(Point p1,Point p2)
+{
+    return sqrt((p1.x-p2.x)*(p1.x-p2.x)+(p1.y-p2.y)*(p1.y-p2.y));
+}
+double xmulti(Point p1,Point p2,Point p0)    //求p1p0和p2p0的叉积,如果大于0,则p1在p2的顺时针方向
+{
+    return (p1.x-p0.x)*(p2.y-p0.y)-(p2.x-p0.x)*(p1.y-p0.y);
+}
+double graham(Point p[],int n)    //点集和点的个数
+{
+    int pl[105];
+    //找到纵坐标（y）最小的那个点，作第一个点
+    int i;
+    int t = 1;
+    for(i=1;i<=n;i++)
+        if(p[i].y < p[t].y)
+            t = i;
+    pl[1] = t;
+    //顺时针找到凸包点的顺序，记录在 int pl[]
+    int num = 1;    //凸包点的数量
+    do{    //已确定凸包上num个点
+        num++; //该确定第 num+1 个点了
+        t = pl[num-1]+1;
+        if(t>n) t = 1;
+        for(int i=1;i<=n;i++){    //核心代码。根据叉积确定凸包下一个点。
+            double x = xmulti(p[i],p[t],p[pl[num-1]]);
+            if(x<0) t = i;
+        }
+        pl[num] = t;
+    } while(pl[num]!=pl[1]);
+    //计算凸包周长
+    double sum = 0;
+    for(i=1;i<num;i++)
+        sum += dis(p[pl[i]],p[pl[i+1]]);
+    return sum;
+}
+int main()
+{
+    int n;
+    cin>>n;
+    int i;
+    for(i=1;i<=n;i++)
+        cin>>p[i].x>>p[i].y;
+    if(n==1){
+        cout<<0<<endl;
+        return 0;
+    }
+    if(n==2){
+        cout<<setiosflags(ios::fixed)<<setprecision(2);
+        cout<<dis(p[1],p[2])<<endl;
+        return 0;
+    }
+    cout<<setiosflags(ios::fixed)<<setprecision(2);
+    cout<<graham(p,n)<<endl;
+    return 0;
+}
+
+
+//https://blog.csdn.net/hnlg311709000526/article/details/81238374
+//凸包求面积和边长
+#include<iostream>
+#include<algorithm>
+#include<cmath>
+#include<cstdio>
+#include<vector>
+#include<map>
+#include<stack>
+#include<cstring>
+#include<string>
+using namespace std;
+
+const double eps = 1e-8,pi=3.14159265;
+// 若 一点的坐标在前面两点的右边，则更新右端点 
+int n;
+
+int dcmp(double x)  // 三态函数 ，在下面用于是否在精度 
+{
+	if(fabs(x)<eps)return 0;
+	else return x>0?1:-1;
+} 
+#define Vector Point
+struct Point 
+{
+	double x,y;
+	inline Point(double x=0,double y=0):x(x),y(y){}
+}p[10000+5],ch[10000+5];
+
+bool myCmp(Point A,Point B){
+	if(A.x!=B.x)return A.x<B.x;
+	else return A.y<B.y;
+}
+
+Vector operator + (Vector A,Vector B){
+	return Vector(A.x+B.x,A.y+B.y);
+}
+Vector operator - (Vector A,Vector B){
+	return Vector(A.x-B.x,A.y-B.y);
+}
+bool operator == (const Vector& A,const Vector& B){
+	return dcmp(A.x-B.x)==0&&dcmp(A.y-B.y)==0;
+}
+inline double Cross(Vector A,Vector B)  // 计算叉积
+{
+	return A.x * B.y - A.y * B.x;
+}
+int ConvexHull()
+{
+	sort(p,p+n,myCmp);
+	int m=0;
+	for(int i=0;i<n;i++){  
+	// 求下曲包，当该点在前进方向的右边时（使用叉积判断），删除前进的右端点，
+	// 循环，直到不在，并将该点加入，不在右边，则直接加入 
+		while(m>1&&dcmp(Cross(ch[m-1]-ch[m-2],p[i]-ch[m-2]))<=0)m--;
+		ch[m++]=p[i];
+	}
+	int k=m;
+	for(int i=n-2;i>=0;i--){  // 因 pn-1 已经遍历过，故从n-2开始 
+		// 求上凸包，最终形成合围，为完整凸包
+		while(m>k&&dcmp(Cross(ch[m-1]-ch[m-2],p[i]-ch[m-2]))<=0)m--;
+		ch[m++]=p[i]; 
+	}
+	if(n>1)m--;  // 因要形成凸包，故起始点重复，减1
+	return m;  //返回顶点个数
+}
+double Dis(Point A,Point B){
+	return sqrt((A.x-B.x)*(A.x-B.x)+(A.y-B.y)*(A.y-B.y));
+}
+int main(){
+	int m;
+	cin >> n;
+	for(int i=0;i<n;i++){
+		int a,b;
+		cin >> a >> b;
+		p[i]=Point(a,b);
+	}
+	m=ConvexHull();
+	
+	//下面是计算凸包周长的 
+/*	double ans=0.0; 
+	for(int i=0;i<m-1;i++)
+	  ans+=Dis(ch[i],ch[i+1]);
+	ans+=Dis(ch[m-1],ch[0]);
+	printf("%.1f\n",ans);*/
+	// 下面是计算凸包面积的
+	 
+	double ans=0.0;
+	ch[m]=ch[0];
+	for(int i=0;i<m;i++){
+		ans+=(ch[i].x*ch[i+1].y-ch[i+1].x*ch[i].y);
+	}
+	ans=ans/2;
+	printf("%.0f\n",floor(ans/50)); 
+} 
+
+
