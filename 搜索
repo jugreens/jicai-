@@ -1,0 +1,96 @@
+#include<cstdio>
+#include<cstring>
+#include<iostream>
+#include<algorithm>
+using namespace std;
+typedef long long ll;
+//const int N = 1e6+10;
+int mpt[16][16];
+int mid[16][16];
+int endn[16][16];
+int M,N;
+const int INF=0x3f3f3f3f;
+int dx[]={-1,1,0,0,0};
+int dy[]={0,0,-1,1,0};
+int check(int x,int y) //判断是否为黑
+{
+	int res=mpt[x][y];
+	for(int i=0;i<5;i++)
+	{
+		int tx=x+dx[i];
+		int ty=y+dy[i];
+		if(tx>=0 && tx<M && ty>=0 && ty <N)
+		res=res+mid[tx][ty];
+	}
+	return res&1;
+}
+int solve()
+{
+	for(int i=1;i<M;i++)
+		for(int j=0;j<N;j++)
+		{
+			if(check(i-1,j)) //确认上一行是否为黑
+				mid[i][j]=1;
+		}
+		for(int i=0;i<N;i++)
+		{
+		    cout << "dd" <<endl;
+			if(check(M-1,i))
+			return INF;
+		}
+		cout <<endl;
+		cout << "ss" <<endl;
+		int res=0;
+		for(int i=0;i<M;i++)
+			for(int j=0;j<N;j++)
+			{
+				if(mid[i][j]==1)
+				res=res+1;
+			}
+        cout << res <<endl;
+		return res;
+}
+int main()
+{
+	while(scanf("%d%d",&M,&N)==2)
+	{
+		for(int i=0;i<M;i++)
+			for(int j=0;j<N;j++)
+				scanf("%d",&mpt[i][j]);
+		memset(endn,0,sizeof(endn));
+		int ans=INF;
+		for(int i=0;i<(1<<N);i++)
+		{
+			memset(mid,0,sizeof(mid));
+			for(int j=0;j<N;j++)
+
+            {
+                //cout <<i << " " << j << " " <<((i>>j)&1) << endl;
+				mid[0][j]=(i>>j)&1;
+
+            }
+				int res=solve();
+				if(res<ans)
+				{
+					ans=res;
+					for(int i=0;i<M;i++)
+						for(int j=0;j<N;j++)
+						endn[i][j]=mid[i][j];
+				}
+		}
+		if(ans==INF)printf("IMPOSSIBLE\n");
+		else
+		{
+			for(int i=0;i<M;i++)
+			{
+				for(int j=0;j<N;j++)
+				{
+					printf("%d",endn[i][j]);
+					if(j!=N-1)printf(" ");
+				}
+				printf("\n");
+			}
+		}
+	}
+	return 0;
+}
