@@ -65,3 +65,71 @@ int main()
 
     return 0;
 }
+
+
+
+
+https://blog.csdn.net/lisong_jerry/article/details/80029967
+///并查集
+#include<iostream>
+#include<cstdio>
+#include<cmath>
+#include<cstdlib>
+#include<algorithm>
+using namespace std;
+
+const int maxn=50005;
+int fa[maxn*3];
+int n,m;
+int ans;
+
+int Find(int x){
+    int t=x;
+    while(fa[t]!=t) t=fa[t];
+    while(x!=t)
+    {
+        int temp=fa[x];
+        fa[x]=t;
+        x=temp;
+    }
+    return t;
+}
+
+void Join(int x,int y){
+    int fx=Find(x),fy=Find(y);
+    if(fx!=fy)
+        fa[fx]=fy;
+}
+
+int main(){
+    scanf("%d%d",&n,&m);
+    for(int i=1;i<=3*n;i++) fa[i]=i;
+    for(int i=1;i<=m;i++){
+        int num,a,b;
+        scanf("%d%d%d",&num,&a,&b);
+        if(a<1||a>n||b<1||b>n) {
+            ans++; continue;
+        }
+        if(num==2&&a==b){
+            ans++;continue;
+        }
+        if(num==1){//a,b同类
+            if(Find(a)==Find(b+n)||Find(b)==Find(a+n)) ans++;//如果a吃b或者b吃a，说明是假话
+            else {//否则是真话，建立a和b同类的关系
+                Join(a,b);
+                Join(a+n,b+n);
+                Join(a+2*n,b+2*n);
+            }
+        }
+        else if(num==2){//a吃b
+            if(Find(a)==Find(b)||Find(b)==Find(a+n)) ans++;//如果a,b同类或者b吃a，说明是假话
+            else {//否则是真话，建立a吃b的关系
+                Join(a,b+n);
+                Join(a+n,b+2*n);
+                Join(a+2*n,b);
+            }
+        }
+    }
+    printf("%d\n",ans);
+    return 0;
+}
