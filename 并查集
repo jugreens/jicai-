@@ -1,0 +1,67 @@
+//https://www.cnblogs.com/liuxin13/p/4668148.html
+#include<cstdio>
+#include<cstring>
+#include<iostream>
+#include<algorithm>
+#include<queue>
+using namespace std;
+typedef long long ll;
+const ll N =2e5+10;
+
+int f[N], val[N];
+
+int Find(int x)
+{
+    int k = f[x];
+
+    if(f[x] != x)
+    {
+        f[x] = Find(f[x]);
+        val[x] += val[k];
+    }
+
+    return f[x];
+}
+
+int main()
+{
+    int N, M;
+
+    while(scanf("%d%d", &N, &M) != EOF)
+    {
+        int i, u, v, w, ans=0;
+
+        for(i=0; i<=N; i++)
+        {
+            f[i] = i;
+            val[i] = 0;
+        }
+
+        while(M--)
+        {
+            scanf("%d%d%d", &u, &v, &w);
+            u = u-1;//注意为什么要减一
+
+            int ru = Find(u), rv = Find(v);
+            cout << "as  " <<ru << "  " << rv << " " << Find(u) <<endl;
+            cout << val[ru] << " " << val[rv] << " "<<val[Find(u)] <<endl;
+            if(ru == rv && val[u]+w != val[v])
+                ans++;
+            else if(ru < rv)
+            {
+                f[rv] = ru;
+                val[rv] = val[u] - val[v] + w;
+            }
+            else if(ru > rv)
+            {
+                f[ru] = rv;
+                val[ru] = val[v] - val[u] - w;
+            }
+            cout << val [rv] << " " << val[ru] <<endl;
+        }
+
+        printf("%d\n", ans);
+    }
+
+    return 0;
+}
