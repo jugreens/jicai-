@@ -1,0 +1,17 @@
+https://ac.nowcoder.com/acm/contest/992/G
+#include<stdio.h>
+#include<string.h>
+int main()
+{
+    char s[100007];
+    int len,ans=0;
+    scanf("%s",s);
+    len=strlen(s);
+    long long  a=0, b=0, c=0;
+   for (int i = 0; i < len; i++){
+        if (s[i] == 'O') a++;
+        if (s[i] == 'R') b += a;
+        if (s[i] == 'Z') c += b;
+    }
+    printf("%lld\n",c);
+}
