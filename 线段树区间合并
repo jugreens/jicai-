@@ -1,0 +1,250 @@
+https://blog.csdn.net/acmore_xiong/article/details/47403479
+
+/****************************>>>>HEADFILES<<<<****************************/
+
+#include <set>
+
+#include <map>
+
+#include <list>
+
+#include <cmath>
+
+#include <queue>
+
+#include <vector>
+
+#include <cstdio>
+
+#include <string>
+
+#include <cstring>
+
+#include <iomanip>
+
+#include <iostream>
+#include <sstream>
+#include <algorithm>
+using namespace std;
+/****************************>>>>>DEFINE<<<<<*****************************/
+#define fst             first
+#define snd             second
+#define root            1,N,1
+#define lson            l,mid,rt<<1
+#define rson            mid+1,r,rt<<1|1
+#define PB(a)           push_back(a)
+#define MP(a,b)         make_pair(a,b)
+#define CASE(T)         for(scanf("%d",&T);T--;)
+#define FIN             freopen("input.txt","r",stdin)
+#define FOUT            freopen("output.txt","w",stdout)
+//#pragma comment(linker, "/STACK:1024000000,1024000000")
+typedef __int64         LL;
+const int INF = 0x3f3f3f3f;
+/****************************>>>>SEPARATOR<<<<****************************/
+const int maxn = 50000 + 5;
+int N, M;
+struct Node
+{
+    int ln, rn, mn;
+} segtree[maxn << 2];// Have not been occupied
+int tag[maxn << 2];//-1 without tag       0 FULL       1 Empty
+inline void PushUp(const int& rt, const int& l, const int& r)
+{
+    segtree[rt].ln = segtree[rt << 1].ln;
+    segtree[rt].rn = segtree[rt << 1 | 1].rn;
+    segtree[rt].mn = max(segtree[rt << 1].rn + segtree[rt << 1 | 1].ln,
+                         max(segtree[rt << 1].mn, segtree[rt << 1 | 1].mn));
+    int mid = (l + r) >> 1;
+    if(segtree[rt << 1].mn == mid - l + 1) 
+        segtree[rt].ln += segtree[rt << 1 | 1].ln;
+    if(segtree[rt << 1 | 1].mn == r - (mid + 1) + 1) 
+        segtree[rt].rn += segtree[rt << 1].rn;
+}
+inline void PushDown(const int& rt, const int& l, const int& r)
+{
+    if(tag[rt] != -1)
+    {
+        tag[rt << 1] = tag[rt << 1 | 1] = tag[rt];
+        int mid = (l + r) >> 1;
+        segtree[rt << 1].ln = segtree[rt << 1].rn = segtree[rt << 1].mn = tag[rt] * (mid - l + 1);
+        segtree[rt << 1 | 1].ln = segtree[rt << 1 | 1].rn = segtree[rt << 1 | 1].mn = tag[rt] * (r - (mid + 1) + 1);
+        tag[rt] = -1;
+    }
+}
+void Build(int l, int r, int rt)
+{
+    segtree[rt].ln = segtree[rt].rn = segtree[rt].mn = r - l + 1;
+    tag[rt] = 1;
+    if(l == r) return ;
+    int mid = (l + r) >> 1;
+    Build(lson);
+    Build(rson);
+}
+void Update(int L, int R, const bool& isClear, int l, int r, int rt)
+{
+    if(L <= l && r <= R)
+    {
+        if(isClear)
+        {
+            segtree[rt].ln = segtree[rt].rn = segtree[rt].mn = r - l + 1;
+            tag[rt] = 1;
+        }
+        else
+        {
+            segtree[rt].ln = segtree[rt].rn = segtree[rt].mn = 0;
+            tag[rt] = 0;
+        }
+        return;
+    }
+    PushDown(rt, l, r);
+    int mid = (l + r) >> 1;
+    if(L <= mid)
+        Update(L, R, isClear, lson);
+    if(mid < R)
+        Update(L, R, isClear, rson);
+    PushUp(rt, l, r);
+}
+int Query(const int& Len, int l, int r, int rt)
+{
+    if(segtree[rt].ln >= Len) return l;
+    int mid = (l + r) >> 1;
+    if(segtree[rt << 1].mn >= Len) 
+        return Query(Len, lson);
+    else if(segtree[rt << 1].rn + segtree[rt << 1 | 1].ln >= Len)  
+        return mid - segtree[rt << 1].rn + 1;
+    else 
+        return Query(Len, rson);
+}
+int Op, X, D, ans;
+int main()
+{
+    //  FIN;
+    while(~scanf("%d %d", &N, &M))
+    {
+        Build(root);
+        while(M--)
+        {
+            scanf("%d", &Op);
+            if(Op & 1)
+            {
+                scanf("%d", &D);
+                if(segtree[1].mn < D)
+                {
+                    printf("0\n");
+                    continue;
+                }
+                ans = Query(D, root);
+                printf("%d\n", ans);
+                Update(ans, ans + D - 1, false, root);
+            }
+            else
+            {
+                scanf("%d %d", &X, &D);
+                Update(X, X + D - 1, true, root);
+            }
+        }
+    }
+}
+
+
+https://blog.csdn.net/samscream/article/details/81699479
+#include<iostream>
+#include<cstring>
+#include<cmath>
+#include<queue>
+using namespace std;
+struct node{
+	int l,r;
+	int ll,rr,len;
+}tree[4*50050];
+void build(int i,int l,int r){
+	tree[i].l=l;tree[i].r=r;
+	tree[i].ll=tree[i].rr=r-l+1;
+	tree[i].len=r-l+1;
+	if(l==r){
+		return;
+	}
+	build(i<<1,l,(int)floor((r+l)/2.0));
+	build((i<<1)+1,(int)floor((r+l)/2.0)+1,r);
+}
+void update(int i,int x,int cnt){
+	if(tree[i].l==tree[i].r){
+		tree[i].ll=tree[i].rr=cnt;
+		return;
+	}
+	int mid=(tree[i].l+tree[i].r)>>1;
+	if(mid>=x){
+		update(i<<1,x,cnt);
+	}
+	else{
+		update((i<<1)+1,x,cnt);
+	}
+	if(tree[(i<<1)].ll+tree[(i<<1)+1].rr==tree[i].len)
+		tree[i].ll=tree[i].rr=tree[i].len;
+	else{
+		if(tree[i<<1].ll==tree[i<<1].len)
+			tree[i].ll=tree[i<<1].len+tree[(i<<1)+1].ll;
+		else
+			tree[i].ll=tree[i<<1].ll;
+		if(tree[(i<<1)+1].rr==tree[(i<<1)+1].len)
+			tree[i].rr=tree[(i<<1)+1].len+tree[i<<1].rr;
+		else
+			tree[i].rr=tree[(i<<1)+1].rr;
+	}
+}
+int que(int i,int x){
+	if(i==1){
+		if(tree[i].ll){
+			if((tree[i].l+tree[i].ll-1)>=x)
+				return tree[i].ll;
+		}
+		if(tree[i].rr){
+			if((tree[i].r-tree[i].rr+1)<=x)
+				return tree[i].rr; 
+		}
+	}
+	if(tree[i].ll){
+		if((tree[i].l+tree[i].ll-1)>=x)
+			return tree[i].ll+tree[i-1].rr;		
+	}
+	if(tree[i].rr){
+		if((tree[i].r-tree[i].rr+1)<=x)
+			return tree[i].rr+tree[i+1].ll;
+	}
+	if(tree[i].l==tree[i].r)
+		return 0;
+	int mid=(tree[i].l+tree[i].r)>>1;
+	if(mid>=x)
+		return que(i<<1,x);
+	else 
+		return que((i<<1)+1,x);
+}
+int main(){
+	int n,m;
+	int q[50005];
+	while(cin>>n>>m){
+		build(1,1,n);
+		int flag=0;
+		for(int i=1;i<=m;i++){
+			char c[5];
+			cin>>c;
+			if(c[0]=='D'){
+				int k;
+				cin>>k;
+				q[++flag]=k;
+				update(1,k,0);
+			}
+			else if(c[0]=='Q'){
+				int k;
+				cin>>k;
+				cout<<que(1,k)<<endl;
+			}
+			else{
+				if(flag==0)continue;
+				int k=q[flag--];
+				update(1,k,1);  
+			}
+		}
+	}
+	return 0;
+}
