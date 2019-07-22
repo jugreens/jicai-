@@ -80,3 +80,39 @@ int main()
 }
 
 
+https://blog.csdn.net/qq_33362864/article/details/73543231
+
+#include<bits/stdc++.h>
+using namespace std;
+typedef long long ll;
+const ll N = 2e3+10;
+const ll inf = 2147483646;
+ll dp[N][N];
+int a[N], b[N];
+int n;
+int main ()
+{
+    scanf("%d", &n);
+	for(int i= 1; i<= n; i++)
+    {
+		scanf("%d", a+i);
+		b[i] = a[i];
+	}
+	sort(b+1, b+n+1);
+	for(int i= 1; i<= n; i++)
+    {
+		ll m = dp[i-1][1];
+		for(int j= 1; j<= n; j++)
+        {
+			m = min(m, dp[i-1][j]);
+			dp[i][j] = abs(a[i] - b[j]) + m;
+		}
+	}
+	ll ans = inf;
+	for(int i= 1; i<= n; i++)
+		ans = min(ans, dp[n][i]);
+	printf("%lld\n", ans);
+	return 0;
+}
+
+
