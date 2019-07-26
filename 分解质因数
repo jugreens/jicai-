@@ -1,0 +1,101 @@
+https://blog.csdn.net/weixin_43851525/article/details/95186334
+
+#include<bits/stdc++.h>
+
+using namespace std;
+
+typedef long long ll;
+
+const int MAXN = 1e4 + 5;
+
+ 
+
+struct node
+
+{
+
+	int x, y; // x 表示质因子， y表示数目
+
+};
+
+ll p[MAXN], n, m1, m2, ans;
+
+vector <node> e;
+
+ 
+
+int main()
+
+{
+
+	while (~scanf("%lld%lld%lld", &n, &m1, &m2)) {
+
+		e.clear();
+
+		for (int i = 0; i < n; i++) scanf("%lld", &p[i]);
+
+		if (m1 == 1) { cout << 0 << endl; continue; }
+
+		for (int i = 2; i <= m1; i++) {
+
+			if (m1 % i == 0) {
+
+				int num = 0;
+
+				while (m1 % i == 0) {
+
+					num++;
+
+					m1 /= i;
+
+				}
+
+				e.push_back({ i, num * m2 });
+
+			}
+
+		}  // 分解质因子
+
+		ans = 0x3f3f3f3f;   // 最终数据
+
+		for (int i = 0; i < n; i++) {
+
+			ll flag = 1, cnt = 0;
+
+			for (int j = 0; j < e.size(); j++) {
+
+				int x = e[j].x, y = e[j].y, tot = 0;
+
+				if (p[i] % x != 0) { flag = 0; break; }//无法整除直接pass
+
+				while (p[i] % x == 0) {
+
+					tot++;  // tot表示需要多少个，与y比较
+
+					p[i] /= x;
+
+				}
+
+				ll ma = y / tot;
+
+				if (y % tot != 0) ma++; // 刚好不够 + 1
+
+				cnt = max(cnt, ma);
+
+			}
+
+			if (!flag) cnt = 0x3f3f3f3f;
+
+			ans = min(ans, cnt);
+
+		}
+
+		if (ans == 0x3f3f3f3f) cout << -1 << endl;
+
+		else cout << ans << endl;
+
+	}
+
+	return 0;
+
+}
