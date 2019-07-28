@@ -124,3 +124,45 @@ int main()
 }
 
 
+
+//https://www.cometoj.com/contest/59/problem/G?problem_id=2697
+
+
+#include <bits/stdc++.h>
+using namespace std;
+#define ll long long
+const int maxn = 1e5 + 5;
+bool vis[maxn];
+ll co[maxn][6];
+ll mmax[6][6], ans = 0;
+void dfs(int now, ll tmp){
+	if(now == 6){
+		ans = max(ans, tmp);
+		return;
+	}
+	for(int i = 1; i <= 5; i++){
+		if(vis[mmax[i][now]])	continue;
+		vis[mmax[i][now]] = 1;
+		dfs(now + 1, tmp + co[mmax[i][now]][now]);
+		vis[mmax[i][now]] = 0;
+	}
+}
+int main(){
+	ll n;
+	cin >> n;
+	for(int i = 1; i <= n; i++){
+		for(int j = 1; j <= 5; j++){
+			cin >> co[i][j];
+			for(int pos = 1; pos <= 5; pos++){
+				if(co[i][j] > co[mmax[pos][j]][j]){
+					for(int k = 5; k >= pos + 1; k--)
+						mmax[k][j] = mmax[k-1][j];
+					mmax[pos][j] = i;
+					break;
+				}
+			}
+		}
+	}
+	dfs(1, 0);
+	cout << ans << endl;
+}
