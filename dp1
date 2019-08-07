@@ -4,7 +4,8 @@ typedef long long ll;
 const int N = 1e6+10;
 const int mod = 1e9+7;
 int q, k, dp[maxn][2], l, r;
-int main() {
+int main()
+{
     while(scanf("%d%d", &q, &k) != EOF) {
         dp[0][0] = 0;
         for (int i = 1 ; i < maxn ; i++) {
