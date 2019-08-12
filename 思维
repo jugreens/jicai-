@@ -166,3 +166,55 @@ int main(){
 	dfs(1, 0);
 	cout << ans << endl;
 }
+
+
+
+
+https://ac.nowcoder.com/acm/contest/1072/C
+#include<bits/stdc++.h>
+using namespace std;
+typedef long long ll;
+const int N = 1e5+10 ;
+
+stack<char>q;
+char a[100]="0123456789ABCDEFGHIJKLMNOPQRSTU";
+int init(char c)
+{
+    if(isdigit(c))
+        return c-'0';
+    else
+        return c-'A'+10 ;
+}
+int main()
+{
+
+    int n, r;
+    cin >> n >> r;
+    int num = n;
+    while(abs(num))
+    {
+        int tt = num%r;
+        if(tt<0)
+            tt+=abs(r);
+        q.push(a[tt]);
+        //cout << num << " " << init(q.top()) <<endl;
+        num-= init(q.top()) ;
+        num/=r;
+        //cout << tt << " " << num <<endl;
+    }
+    cout << n << "=" ;
+    while(!q.empty())
+    {
+        cout <<q.top() ;
+        q.pop();
+    }
+    printf("(base%d)\n",r);
+
+
+
+
+
+    return 0;
+
+}
+
