@@ -246,3 +246,38 @@ int main()
 
 }
 
+
+#include<bits/stdc++.h>
+using namespace std;
+typedef long long ll;
+const int N = 5e5;
+ll ans[710][710];
+ll a[N];
+int main()
+{
+    int n;
+	scanf("%d",&n);
+	while(n--)
+    {
+        int op , x , y ;
+        cin >> op >> x>>y ;
+        if(op==1)
+        {
+            a[x]+=y;
+            for(int i = 1 ; i <=700 ; i++)
+                ans[i][x%i]+=y;
+        }
+        else
+        {
+            if(x<=700)
+                cout << ans[x][y] <<endl;
+            else
+            {
+                ll anss = 0;
+                for(int j = y ; j<= N ; j+=x)
+                    anss+=a[j];
+                cout << anss <<endl;
+            }
+        }
+    }
+}
