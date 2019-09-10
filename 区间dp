@@ -211,3 +211,43 @@ int main()
     }
     cout << minn <<endl;cout  << maxn <<endl;
 }
+
+
+
+6.构造
+.给定一个数N和一个只包含0、1的序列A，大小为N-1。如果Ai为0，则需Pi>Pi+1；若Ai为1，则需Pi＜Pi+1。其中N≥Pi≥1，求解有多少种符合条件的Pi序列。
+#include <bits/stdc++.h>
+using namespace std;
+typedef long long ll;
+const int N=1e3+7;
+const int mod=1e9+7;
+ll dp[N][N];
+ll sum[N][N];
+int a[N];
+int n;
+int main()
+{
+    cin>>n;
+    for(int i=1;i<n;i++) cin>>a[i];
+    if(a[1])
+    { 
+        dp[1][1]=1; sum[1][2]=sum[1][1]=1; 
+    }
+    else      
+    { 
+        dp[1][2]=1; 
+        sum[1][2]=1; 
+    }
+    for(int i=2;i<n;i++) 
+        for(int j=1;j<=i+1;j++) 
+        {
+            if (a[i]) 
+                dp[i][j]=(sum[i-1][i]-sum[i-1][j-1]+mod)%mod;
+            else      
+                dp[i][j]=sum[i-1][j-1];
+            sum[i][j]=(sum[i][j-1]+dp[i][j])%mod;
+        }
+        printf("%lld\n", sum[n-1][n]);
+    return 0;
+}
+
