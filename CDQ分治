@@ -1,0 +1,57 @@
+1.BZOJ3295 [Cqoi2011]动态逆序对
+对于序列A，它的逆序对数定义为满足i<j，且Ai>Aj的数对(i,j)的个数。给1到n的一个排列，按照某种顺序依次删除m个元素，你的任务是在每次删除一个元素之前统计整个序列的逆序对数。
+#include<bits/stdc++.h>
+using namespace std;
+typedef long long LL;
+const int inf = (1<<30);
+const int MAXN = 100011;
+int n,m,c[MAXN],match[MAXN],ans[MAXN];
+LL Ans;
+struct node{
+    int x,y,t;
+    int flag;
+}a[MAXN],b[MAXN];
+inline bool cmpx(node q,node qq){ if(q.x==qq.x) return q.y<qq.y; return q.x<qq.x; }
+inline bool cmpt(node q,node qq){ return q.t<qq.t; }
+inline void add(int x,int val){ while(x<=n) c[x]+=val,x+=x&(-x); }
+inline int query(int x){int tot=0; while(x>0) tot+=c[x],x-=x&(-x); return tot;  }
+inline int getint()
+{
+    int w=0,q=0; char c=getchar();
+    while((c<'0' || c>'9') && c!='-') c=getchar(); if(c=='-') q=1,c=getchar(); 
+    while (c>='0' && c<='9') w=w*10+c-'0', c=getchar(); return q ? -w : w;
+}
+
+inline void CDQ(int l,int r){
+    if(l>=r) return ; int mid=(l+r)>>1,size=r-l+1,cnt=0;
+    for(int i=l;i<=mid;i++) b[++cnt]=a[i],b[cnt].flag=0; for(int i=mid+1;i<=r;i++) b[++cnt]=a[i],b[cnt].flag=1;
+    sort(b+1,b+cnt+1,cmpx); //for(int i=1;i<=n;i++) c[i]=0;
+    for(int i=1;i<=size;i++) {
+    if(b[i].flag==0) add(b[i].y,1);
+    else ans[b[i].t]+=query(n)-query(b[i].y);
+    }
+    for(int i=1;i<=size;i++) if(b[i].flag==0) add(b[i].y,-1);
+    for(int i=size;i>=1;i--) {
+    if(b[i].flag==0) add(b[i].y,1);
+    else ans[b[i].t]+=query(b[i].y);
+    }
+    for(int i=1;i<=size;i++) if(b[i].flag==0) add(b[i].y,-1);
+    CDQ(l,mid); if(mid<r) CDQ(mid+1,r);
+}
+
+inline void work(){
+    n=getint(); m=getint(); for(int i=1;i<=n;i++) { a[i].x=i; a[i].y=getint(); match[a[i].y]=i; } int cc=n,x;
+    for(int i=1;i<=m;i++) { x=getint(); a[match[x]].t=cc--; }  for(int i=1;i<=n;i++) if(a[i].t==0) a[i].t=cc--;
+    sort(a+1,a+n+1,cmpt); CDQ(1,n);
+    for(int i=1;i<=n;i++) Ans+=ans[i];
+    for(int i=n;i>n-m;i--) {
+    printf("%lld\n",Ans);
+    Ans-=ans[i];
+    }
+}
+
+int main()
+{
+    work();
+    return 0;
+}
